@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const buyAndSellRouter=require("./routers/buySellRouter");
+const authRouter=require("./routers/authRouter");
 const mongoose = require("mongoose");
 require("dotenv").config();
 // enable CORS
@@ -24,7 +25,19 @@ app.use(express.json({
     limit: "50mb",
     extended:true
 }));
+
+// Authorized access
+app.use((req,res,next) => {
+    console.log(req.headers);
+    if(req.originalMethod!=="GET" && req.headers["security-key"]!==process.env.SECURITY_KEY){
+      res.json({"message":"You are not authorized"});
+      return;
+    }
+    next();
+  });
+
 app.use("/", buyAndSellRouter.buyAndSellRouter);
+app.use("/", authRouter.authRouter);
 app.get("/",(req,res) => {
     res.send("App is working.");
 });
