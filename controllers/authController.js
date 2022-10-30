@@ -36,7 +36,7 @@ exports.loginController = async (req,res) => {
             res.status(400).json({"result" : "Useremail or Password maybe incorrect"});
             return;
         }
-        res.json({"result" : "Loggedin Successfully"});
+        res.json({"result" : "Loggedin Successfully","username":dbUser["username"]});
     }
     catch(err){
         console.log(err);
