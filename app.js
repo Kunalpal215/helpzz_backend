@@ -28,9 +28,10 @@ app.use(express.json({
 
 // Authorized access
 app.use((req,res,next) => {
+  console.log(req.method);
   console.log(req);
     console.log(req.headers);
-    if(req.originalMethod!=="GET" && req.headers["security-key"]!==process.env.SECURITY_KEY){
+    if(req.method!=="GET" && req.headers["security-key"]!==process.env.SECURITY_KEY){
       res.json({"message":"You are not authorized"});
       return;
     }
