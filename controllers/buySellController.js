@@ -113,7 +113,7 @@ exports.postSellDetails = async (req, res) => {
       "https://whispering-journey-08979.herokuapp.com/images_folder/" + imageName +"-ultracompressed.jpg";
       const newImagePath = path.resolve(
         __dirname +
-        "/../" +
+        "/../" +  "public" + "/" + 
         "images_folder" +
         "/" +
         imageName +
@@ -121,7 +121,7 @@ exports.postSellDetails = async (req, res) => {
       );
       const compressedImagePath = path.resolve(
         __dirname +
-        "/../" +
+        "/../" +  "public" + "/" + 
         "images_folder" +
         "/" +
         imageName +
@@ -298,7 +298,7 @@ exports.postBuyDetails = async (req, res) => {
         imageName;
       const newImagePath = path.resolve(
         __dirname +
-        "/../" +
+        "/../" +  "public" + "/" + 
         "images_folder" +
         "/" +
         imageName +
@@ -306,7 +306,7 @@ exports.postBuyDetails = async (req, res) => {
       );
       const compressedImagePath = path.resolve(
         __dirname +
-        "/../" +
+        "/../" +  "public" + "/" + 
         "images_folder" +
         "/" +
         imageName +
