@@ -93,7 +93,7 @@ exports.postSellDetails = async (req, res) => {
 
     const imageName = uuid.v4();
     const imagePath = path.resolve(
-      __dirname + "/../" + "images_folder" + "/" + imageName + ".jpg"
+      __dirname + "/../" + "public" + "/" + "images_folder" + "/" + imageName + ".jpg"
     );
     console.log("image path is: " + imagePath);
     console.log(Buffer.from(imageString, "base64").toString("ascii"));
@@ -276,7 +276,7 @@ exports.postBuyDetails = async (req, res) => {
     req.body;
     const imageName = uuid.v4();
     const imagePath = path.resolve(
-      __dirname + "/../" + "images_folder" + "/" + imageName + ".jpg"
+      __dirname + "/../" + "public" + "/"  +  "images_folder" + "/" + imageName + ".jpg"
     );
     console.log(imagePath);
 
