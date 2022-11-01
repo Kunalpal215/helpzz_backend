@@ -292,10 +292,9 @@ exports.postBuyDetails = async (req, res) => {
       console.log(metadata);
       const photo_id = imageName;
       const imageURL =
-        "https://whispering-journey-08979.herokuapp.com/getImage?photo_id=" + imageName;
+        "https://whispering-journey-08979.herokuapp.com/images_folder/" + imageName +"-compressed.jpg";
       const compressedImageURL =
-        "https://whispering-journey-08979.herokuapp.com/getCompressedImage?photo_id=" +
-        imageName;
+      "https://whispering-journey-08979.herokuapp.com/images_folder/" + imageName +"-ultracompressed.jpg";
       const newImagePath = path.resolve(
         __dirname +
         "/../" +  "public" + "/" + 
