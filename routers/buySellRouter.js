@@ -7,6 +7,10 @@ buyAndSellRouter.post(
   buyAndSellControllers.postSellRemoveDetails
 );
 
+buyAndSellRouter.get("/getImage", buyAndSellControllers.getImage);
+
+buyAndSellRouter.get("/getCompressedImage", buyAndSellControllers.getCompressedImage);
+
 buyAndSellRouter.get("/sell",buyAndSellControllers.getSellDetails);
 
 buyAndSellRouter.get("/sellPage", buyAndSellControllers.getSellPageDetails);
