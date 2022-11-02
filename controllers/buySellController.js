@@ -6,6 +6,7 @@ const deepai = require("deepai");
 const uuid = require("uuid");
 const sharp = require("sharp");
 const API_URL = "https://whispering-journey-08979.herokuapp.com/";
+const cloudinary = require('cloudinary').v2
 deepai.setApiKey(process.env.NSFW_API_KEY);
 
 function errorFxn(res, err) {
@@ -103,10 +104,8 @@ exports.postSellDetails = async (req, res) => {
         console.log("File written successfully\n");
       }
     });
-    try {
-      const metadata = await sharp(imagePath).metadata();
+    const metadata = await sharp(imagePath).metadata();
       console.log(metadata);
-      const photo_id = imageName;
       const imageURL =
         "https://whispering-journey-08979.herokuapp.com/images_folder/" + imageName +"-compressed.jpg";
       const compressedImageURL =
@@ -129,8 +128,7 @@ exports.postSellDetails = async (req, res) => {
       );
       console.log(newImagePath);
       //const imageURL = "https://femefun.com/contents/videos_screenshots/50000/50719/preview.mp4.jpg";
-      try {
-        await sharp(imagePath)
+      await sharp(imagePath)
           .resize({
             width: Math.floor(metadata.width / 2),
             height: Math.floor(metadata.height / 2),
@@ -154,9 +152,6 @@ exports.postSellDetails = async (req, res) => {
             mozjpeg: true
           })
           .toFile(compressedImagePath);
-        console.log("Here 1");
-        console.log("Here 2");
-        console.log("fjklsdghjkdfhgjkdfhgjkdhgjfkdhgukjdf");
         var safeToUseResp = await deepai.callStandardApi("nsfw-detector", {
           image: fs.createReadStream(imagePath),
         });
@@ -169,6 +164,10 @@ exports.postSellDetails = async (req, res) => {
           });
           return;
         }
+        let response = await cloudinary.v2.uploader.upload(imageURL);
+        imageURL=response["url"];
+        response = await cloudinary.v2.uploader.upload(compressedImageURL);
+        compressedImageURL=response["url"];
         const newSellDetail = await new sellModel({
             title,
             price,
@@ -182,20 +181,16 @@ exports.postSellDetails = async (req, res) => {
           .save()
           .then((result) => {
             console.log(result);
+            res.json({
+              saved_successfully: true,
+              image_safe: true
+            })
           });
-        return res.json({
-          saved_successfully: true,
-          image_safe: true
-        });
-      } catch (error) {
-        return errorFxn(res, error);
-      }
-    } catch (error) {
-      return errorFxn(res, error);
-    }
   } catch (error) {
-    console.log(error);
-    return errorFxn(res, error);
+    res.json({
+      saved_successfully: false,
+      image_safe: true
+    });
   }
 };
 
