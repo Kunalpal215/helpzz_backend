@@ -157,11 +157,10 @@ exports.postSellDetails = async (req, res) => {
             mozjpeg: true
           })
           .toFile(compressedImagePath);
+          console.log("kunal3");
         var safeToUseResp = await deepai.callStandardApi("nsfw-detector", {
           image: fs.createReadStream(imagePath),
         });
-        fs.unlinkSync(imagePath);
-        //fs.unlinkSync(imagePath);
         if (safeToUseResp.output.nsfw_score > 0.1) {
           res.json({
             saved_successfully: false,
@@ -169,12 +168,13 @@ exports.postSellDetails = async (req, res) => {
           });
           return;
         }
-        console.log("kunal3");
+        console.log("kunal4");
         let response = await cloudinary.v2.uploader.upload(imageURL);
         imageURL=response["url"];
         response = await cloudinary.v2.uploader.upload(compressedImageURL);
         compressedImageURL=response["url"];
         console.log(imageURL,compressedImageURL);
+        console.log("kunal5");
         const newSellDetail = await new sellModel({
             title,
             price,
@@ -187,7 +187,7 @@ exports.postSellDetails = async (req, res) => {
           })
           .save()
           .then((result) => {
-            console.log("kunal3");
+            console.log("kunal5");
             console.log(result);
             res.json({
               saved_successfully: true,
