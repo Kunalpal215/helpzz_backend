@@ -114,7 +114,7 @@ exports.postSellDetails = async (req, res) => {
       const photo_id = imageName;
       var imageURL =
         "https://whispering-journey-08979.herokuapp.com/images_folder/" + imageName +"-compressed.jpg";
-      validateHeaderName compressedImageURL =
+      var compressedImageURL =
       "https://whispering-journey-08979.herokuapp.com/images_folder/" + imageName +"-ultracompressed.jpg";
       const newImagePath = path.resolve(
         __dirname +
