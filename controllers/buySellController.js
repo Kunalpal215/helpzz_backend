@@ -160,7 +160,7 @@ exports.postSellDetails = async (req, res) => {
           image: fs.createReadStream(imagePath),
         });
         fs.unlinkSync(imagePath);
-        cloudinary.v2.uploader.upload(imageURL, {upload_preset: "tfdkna7i"}, (error, result)=>{
+        cloudinary.uploader.upload(imageURL, {upload_preset: "tfdkna7i"}, (error, result)=>{
           console.log(result, error);
         });
         //fs.unlinkSync(imagePath);
