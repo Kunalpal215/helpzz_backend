@@ -6,7 +6,6 @@ const deepai = require("deepai");
 const uuid = require("uuid");
 const sharp = require("sharp");
 const API_URL = "https://whispering-journey-08979.herokuapp.com/";
-const cloudinary = require('cloudinary').v2
 deepai.setApiKey(process.env.NSFW_API_KEY);
 
 function errorFxn(res, err) {
@@ -76,7 +75,6 @@ exports.deleteSellAll = async (req,res) => {
 }
 
 exports.postSellDetails = async (req, res) => {
-  console.log("kunal1");
   try {
     var {
       title,
@@ -98,19 +96,16 @@ exports.postSellDetails = async (req, res) => {
       __dirname + "/../" + "public" + "/" + "images_folder" + "/" + imageName + ".jpg"
     );
     console.log("image path is: " + imagePath);
-    // console.log(Buffer.from(imageString, "base64").toString("ascii"));
+    console.log(Buffer.from(imageString, "base64").toString("ascii"));
     fs.writeFileSync(imagePath, Buffer.from(imageString, "base64"), (err) => {
-      if (err){
-        console.log("Error here");
-        console.log(err);
-      }
+      if (err) console.log(err);
       else {
         console.log("File written successfully\n");
       }
     });
-    console.log("kunal2");
-    // const metadata = await sharp(imagePath).metadata();
-      // console.log(metadata);
+    const metadata = await sharp(imagePath).metadata();
+      console.log(metadata);
+      const photo_id = imageName;
       const imageURL =
         "https://whispering-journey-08979.herokuapp.com/images_folder/" + imageName +"-compressed.jpg";
       const compressedImageURL =
@@ -143,7 +138,6 @@ exports.postSellDetails = async (req, res) => {
             mozjpeg: true
           })
           .toFile(newImagePath);
-          console.log("kunal9");
         await sharp(imagePath)
           .resize({
             width: Math.floor(
@@ -158,10 +152,14 @@ exports.postSellDetails = async (req, res) => {
             mozjpeg: true
           })
           .toFile(compressedImagePath);
-          console.log("kunal3");
+        console.log("Here 1");
+        console.log("Here 2");
+        console.log("fjklsdghjkdfhgjkdfhgjkdhgjfkdhgukjdf");
         var safeToUseResp = await deepai.callStandardApi("nsfw-detector", {
           image: fs.createReadStream(imagePath),
         });
+        fs.unlinkSync(imagePath);
+        //fs.unlinkSync(imagePath);
         if (safeToUseResp.output.nsfw_score > 0.1) {
           res.json({
             saved_successfully: false,
@@ -169,13 +167,6 @@ exports.postSellDetails = async (req, res) => {
           });
           return;
         }
-        console.log("kunal4");
-        let response = await cloudinary.v2.uploader.upload(imageURL);
-        imageURL=response["url"];
-        response = await cloudinary.v2.uploader.upload(compressedImageURL);
-        compressedImageURL=response["url"];
-        console.log(imageURL,compressedImageURL);
-        console.log("kunal5");
         const newSellDetail = await new sellModel({
             title,
             price,
@@ -188,16 +179,16 @@ exports.postSellDetails = async (req, res) => {
           })
           .save()
           .then((result) => {
-            console.log("kunal5");
             console.log(result);
             res.json({
               saved_successfully: true,
               image_safe: true
-            })
+            });
           });
   } catch (error) {
+    console.log(error);
     console.log("Error Occured");
-    res.json({
+    return res.json({
       saved_successfully: false,
       image_safe: true
     });

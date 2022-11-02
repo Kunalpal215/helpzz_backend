@@ -11,7 +11,6 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "cloudinary": "^1.32.0",
     "deepai": "^1.0.21",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
