@@ -99,7 +99,9 @@ exports.postSellDetails = async (req, res) => {
     console.log("image path is: " + imagePath);
     // console.log(Buffer.from(imageString, "base64").toString("ascii"));
     fs.writeFileSync(imagePath, Buffer.from(imageString, "base64"), (err) => {
-      if (err) console.log(err);
+      if (err){
+        console.log(err);
+      }
       else {
         console.log("File written successfully\n");
       }
@@ -188,6 +190,7 @@ exports.postSellDetails = async (req, res) => {
             })
           });
   } catch (error) {
+    console.log("Error Occured");
     res.json({
       saved_successfully: false,
       image_safe: true
