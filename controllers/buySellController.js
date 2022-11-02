@@ -97,15 +97,15 @@ exports.postSellDetails = async (req, res) => {
       __dirname + "/../" + "public" + "/" + "images_folder" + "/" + imageName + ".jpg"
     );
     console.log("image path is: " + imagePath);
-    console.log(Buffer.from(imageString, "base64").toString("ascii"));
+    // console.log(Buffer.from(imageString, "base64").toString("ascii"));
     fs.writeFileSync(imagePath, Buffer.from(imageString, "base64"), (err) => {
       if (err) console.log(err);
       else {
         console.log("File written successfully\n");
       }
     });
-    const metadata = await sharp(imagePath).metadata();
-      console.log(metadata);
+    // const metadata = await sharp(imagePath).metadata();
+      // console.log(metadata);
       const imageURL =
         "https://whispering-journey-08979.herokuapp.com/images_folder/" + imageName +"-compressed.jpg";
       const compressedImageURL =
@@ -168,6 +168,7 @@ exports.postSellDetails = async (req, res) => {
         imageURL=response["url"];
         response = await cloudinary.v2.uploader.upload(compressedImageURL);
         compressedImageURL=response["url"];
+        console.log(imageURL,compressedImageURL);
         const newSellDetail = await new sellModel({
             title,
             price,
