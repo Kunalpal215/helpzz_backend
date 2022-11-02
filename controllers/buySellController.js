@@ -14,14 +14,6 @@ cloudinary.config({
 console.log(cloudinary.config());
 deepai.setApiKey(process.env.NSFW_API_KEY);
 
-function errorFxn(res, err) {
-  console.log(err);
-  return res.json({
-    saved_successfully: false,
-    image_safe: true
-  });
-}
-
 exports.getImage = async (req, res) => {
   console.log("Get image par");
   const imagePath = path.resolve(
@@ -63,17 +55,6 @@ exports.getSellDetails = async (req, res) => {
   }
 };
 
-exports.getSellPageDetails = async (req, res) => {
-  let page = req.query.page;
-  const toSkip = (page - 1) * 5;
-  const docsCount = await sellModel.countDocuments();
-  if (toSkip > docsCount) {
-    res.json({ result: false, details: [] });
-    return;
-  }
-  const sellItems = await sellModel.find().sort({ "date": -1 }).skip(toSkip).limit(5);
-  res.json({ result: true, details: sellItems });
-}
 
 exports.deleteSellAll = async (req,res) => {
   await sellModel.deleteMany({});
@@ -203,50 +184,7 @@ exports.postSellDetails = async (req, res) => {
   }
 };
 
-exports.postSellRemoveDetails = async (req, res) => {
-  console.log("lkkjklj" + req.body);
-  try {
-    const {
-      id,
-      email
-    } = req.body;
-    console.log(id, email);
-    const foundItem = await sellModel.findById(id);
-    if (!foundItem) {
-      res.json({
-        deleted_successfully: false,
-        "message": "looks something wrong"
-      });
-      return;
-    }
-    console.log(foundItem);
-    if (foundItem.email == email) {
-      await sellModel.findByIdAndDelete(id);
-      res.json({
-        deleted_successfully: true
-      });
-    }
-    res.json({
-      message: "This item does not belong to the entered email"
-    });
-  } catch (error) {
-    console.log(error.message);
-  }
-};
-
 // buy details
-
-exports.getBuyPageDetails = async (req, res) => {
-  let page = req.query.page;
-  const toSkip = (page - 1) * 5;
-  const docsCount = await buyModel.countDocuments();
-  if (toSkip > docsCount) {
-    res.json({ result: false, details: [] });
-    return;
-  }
-  const buyItems = await buyModel.find().sort({ "date": -1 }).skip(toSkip).limit(5);
-  res.json({ result: true, details: buyItems });
-}
 
 exports.getBuyDetails = async (req, res) => {
   try {
@@ -385,67 +323,6 @@ exports.postBuyDetails = async (req, res) => {
       saved_successfully: false,
       image_safe: true
     });
-  }
-};
-
-exports.postBuyRemoveDetails = async (req, res) => {
-  try {
-    const {
-      id,
-      email
-    } = req.body;
-    console.log(id, email);
-    const foundItem = await buyModel.findById(id);
-    if (!foundItem) {
-      res.json({
-        deleted_successfully: false,
-        "message": "looks something wrong"
-      });
-      return;
-    }
-    console.log(foundItem.email);
-    if (foundItem.email == email) {
-      await buyModel.findByIdAndDelete(id);
-      res.json({
-        deleted_successfully: true
-      });
-    } else {
-      res.json({
-        message: "This item does not belong to the entered email"
-      });
-    }
-  } catch (error) {
-    console.log(error.message);
-  }
-};
-
-exports.getMyAds = async (req, res) => {
-  console.log(req.body);
-  try {
-    const {
-      email
-    } = req.body;
-    console.log(email);
-
-    const buyDetails = await buyModel.find({
-      email: email
-    });
-    buyDetails.sort(compare);
-
-    const sellDetails = await sellModel.find({
-      email: email
-    });
-    sellDetails.sort(compare);
-
-    const allDetails = {
-      sellList: sellDetails,
-      buyList: buyDetails,
-    };
-    return res.json({
-      details: allDetails
-    });
-  } catch (error) {
-    console.log(error.message);
   }
 };
 
