@@ -143,6 +143,7 @@ exports.postSellDetails = async (req, res) => {
             mozjpeg: true
           })
           .toFile(newImagePath);
+          console.log("kunal9");
         await sharp(imagePath)
           .resize({
             width: Math.floor(
