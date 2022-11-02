@@ -76,6 +76,7 @@ exports.deleteSellAll = async (req,res) => {
 }
 
 exports.postSellDetails = async (req, res) => {
+  console.log("kunal1");
   try {
     var {
       title,
@@ -100,12 +101,14 @@ exports.postSellDetails = async (req, res) => {
     // console.log(Buffer.from(imageString, "base64").toString("ascii"));
     fs.writeFileSync(imagePath, Buffer.from(imageString, "base64"), (err) => {
       if (err){
+        console.log("Error here");
         console.log(err);
       }
       else {
         console.log("File written successfully\n");
       }
     });
+    console.log("kunal2");
     // const metadata = await sharp(imagePath).metadata();
       // console.log(metadata);
       const imageURL =
@@ -166,6 +169,7 @@ exports.postSellDetails = async (req, res) => {
           });
           return;
         }
+        console.log("kunal3");
         let response = await cloudinary.v2.uploader.upload(imageURL);
         imageURL=response["url"];
         response = await cloudinary.v2.uploader.upload(compressedImageURL);
@@ -183,6 +187,7 @@ exports.postSellDetails = async (req, res) => {
           })
           .save()
           .then((result) => {
+            console.log("kunal3");
             console.log(result);
             res.json({
               saved_successfully: true,
