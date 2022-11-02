@@ -7,6 +7,10 @@ const uuid = require("uuid");
 const sharp = require("sharp");
 const API_URL = "https://whispering-journey-08979.herokuapp.com/";
 const cloudinary = require('cloudinary').v2;
+cloudinary.config({
+  secure: true
+});
+console.log(cloudinary.config());
 deepai.setApiKey(process.env.NSFW_API_KEY);
 
 function errorFxn(res, err) {
