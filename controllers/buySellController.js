@@ -158,9 +158,6 @@ exports.postSellDetails = async (req, res) => {
             mozjpeg: true
           })
           .toFile(compressedImagePath);
-        console.log("Here 1");
-        console.log("Here 2");
-        console.log("fjklsdghjkdfhgjkdfhgjkdhgjfkdhgukjdf");
         var safeToUseResp = await deepai.callStandardApi("nsfw-detector", {
           image: fs.createReadStream(imagePath),
         });
@@ -269,38 +266,40 @@ exports.deleteBuyAll = async (req,res) => {
 }
 
 exports.postBuyDetails = async (req, res) => {
-  console.log(req.body);
   try {
     var {
       title,
-      phonenumber,
       price,
+      phonenumber,
       description,
       imageString,
       email,
-      username
-    } =
-    req.body;
+      username,
+    } = req.body;
+    console.log(title);
+    console.log(price);
+    console.log(phonenumber);
+    console.log(description);
+    console.log(imageString);
+
     const imageName = uuid.v4();
     const imagePath = path.resolve(
-      __dirname + "/../" + "public" + "/"  +  "images_folder" + "/" + imageName + ".jpg"
+      __dirname + "/../" + "public" + "/" + "images_folder" + "/" + imageName + ".jpg"
     );
-    console.log(imagePath);
-
+    console.log("image path is: " + imagePath);
+    console.log(Buffer.from(imageString, "base64").toString("ascii"));
     fs.writeFileSync(imagePath, Buffer.from(imageString, "base64"), (err) => {
       if (err) console.log(err);
       else {
         console.log("File written successfully\n");
       }
     });
-
-    try {
-      const metadata = await sharp(imagePath).metadata();
+    const metadata = await sharp(imagePath).metadata();
       console.log(metadata);
       const photo_id = imageName;
-      const imageURL =
+      var imageURL =
         "https://whispering-journey-08979.herokuapp.com/images_folder/" + imageName +"-compressed.jpg";
-      const compressedImageURL =
+      var compressedImageURL =
       "https://whispering-journey-08979.herokuapp.com/images_folder/" + imageName +"-ultracompressed.jpg";
       const newImagePath = path.resolve(
         __dirname +
@@ -318,9 +317,9 @@ exports.postBuyDetails = async (req, res) => {
         imageName +
         "-ultracompressed.jpg"
       );
+      console.log(newImagePath);
       //const imageURL = "https://femefun.com/contents/videos_screenshots/50000/50719/preview.mp4.jpg";
-      try {
-        await sharp(imagePath)
+      await sharp(imagePath)
           .resize({
             width: Math.floor(metadata.width / 2),
             height: Math.floor(metadata.height / 2),
@@ -344,15 +343,16 @@ exports.postBuyDetails = async (req, res) => {
             mozjpeg: true
           })
           .toFile(compressedImagePath);
-        console.log("Here 1");
-        console.log("Here 2");
-        console.log(imagePath);
-        console.log("fjklsdghjkdfhgjkdfhgjkdhgjfkdhgukjdf");
         var safeToUseResp = await deepai.callStandardApi("nsfw-detector", {
           image: fs.createReadStream(imagePath),
         });
-        // fs.unlinkSync(imagePath);
         fs.unlinkSync(imagePath);
+        let response = await cloudinary.uploader.upload(imageURL);
+        imageURL=response["url"]
+        response = await cloudinary.uploader.upload(compressedImageURL);
+        compressedImageURL=response["url"]
+        console.log(imageURL,compressedImageURL);
+        //fs.unlinkSync(imagePath);
         if (safeToUseResp.output.nsfw_score > 0.1) {
           res.json({
             saved_successfully: false,
@@ -373,19 +373,18 @@ exports.postBuyDetails = async (req, res) => {
           .save()
           .then((result) => {
             console.log(result);
+            res.json({
+              saved_successfully: true,
+              image_safe: true
+            });
           });
-        return res.json({
-          saved_successfully: true,
-          image_safe: true
-        });
-      } catch (error) {
-        return errorFxn(res, error);
-      }
-    } catch (error) {
-      return errorFxn(res, error);
-    }
   } catch (error) {
-    return errorFxn(res, error);
+    console.log(error);
+    console.log("Error Occured");
+    return res.json({
+      saved_successfully: false,
+      image_safe: true
+    });
   }
 };
 
