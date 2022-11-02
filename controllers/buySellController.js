@@ -6,6 +6,7 @@ const deepai = require("deepai");
 const uuid = require("uuid");
 const sharp = require("sharp");
 const API_URL = "https://whispering-journey-08979.herokuapp.com/";
+const cloudinary = require('cloudinary').v2;
 deepai.setApiKey(process.env.NSFW_API_KEY);
 
 function errorFxn(res, err) {
@@ -159,6 +160,9 @@ exports.postSellDetails = async (req, res) => {
           image: fs.createReadStream(imagePath),
         });
         fs.unlinkSync(imagePath);
+        cloudinary.v2.uploader.upload(imageURL, {upload_preset: "tfdkna7i"}, (error, result)=>{
+          console.log(result, error);
+        });
         //fs.unlinkSync(imagePath);
         if (safeToUseResp.output.nsfw_score > 0.1) {
           res.json({
