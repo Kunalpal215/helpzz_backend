@@ -5,6 +5,7 @@ const path = require("path");
 const deepai = require("deepai");
 const uuid = require("uuid");
 const sharp = require("sharp");
+const { validateHeaderName } = require("http");
 const API_URL = "https://whispering-journey-08979.herokuapp.com/";
 const cloudinary = require('cloudinary').v2;
 cloudinary.config({
@@ -111,9 +112,9 @@ exports.postSellDetails = async (req, res) => {
     const metadata = await sharp(imagePath).metadata();
       console.log(metadata);
       const photo_id = imageName;
-      const imageURL =
+      var imageURL =
         "https://whispering-journey-08979.herokuapp.com/images_folder/" + imageName +"-compressed.jpg";
-      const compressedImageURL =
+      validateHeaderName compressedImageURL =
       "https://whispering-journey-08979.herokuapp.com/images_folder/" + imageName +"-ultracompressed.jpg";
       const newImagePath = path.resolve(
         __dirname +
